@@ -1,34 +1,26 @@
-terraform {
-  required_providers {
-    yandex = {
-      source  = "yandex-cloud/yandex"
-      version = ">= 0.80"
-    }
-  }
-}
-
-provider "yandex" {
-  token     = var.token
-  cloud_id  = var.cloud_id
-  folder_id = var.folder_id
-  zone      = "ru-central1-a"
-}
-
+# Создание облачной сети
 resource "yandex_vpc_network" "network" {
-  name = "terraform-network"
+  name = "app1-network"
+  description = "Основная сеть для app1"
 }
 
-resource "yandex_vpc_subnet" "subnet" {
-  name           = "terraform-subnet"
+# Создание подсети
+resource "yandex_vpc_subnet" "app1_net" {
+  name           = "app1-net"
+  description    = "Подсеть для app1"
   zone           = "ru-central1-a"
   network_id     = yandex_vpc_network.network.id
   v4_cidr_blocks = ["10.0.0.0/24"]
 }
 
+# Создание виртуальной машины
 resource "yandex_compute_instance" "vm" {
-  name        = "terraform-vm"
+  name        = "app1-vm"
+  description = "Виртуальная машина app1"
   platform_id = "standard-v1"
-
+  scheduling_policy {
+  preemptible = true
+  }
   resources {
     cores  = var.vm_resources.cores
     memory = var.vm_resources.memory
@@ -36,19 +28,19 @@ resource "yandex_compute_instance" "vm" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8aus3bfglr6dg9hsbk"
+      image_id = "fd8aus3bfglr6dg9hsbk" # Ubuntu 20.04 LTS
       size     = var.vm_resources.disk_size
-      type     = "network-hdd" # Переносим сюда тип диска
+      type     = "network-hdd"
     }
   }
 
   network_interface {
-    subnet_id = yandex_vpc_subnet.subnet.id
+    subnet_id = yandex_vpc_subnet.app1_net.id
     nat       = var.enable_nat
   }
 
   metadata = {
     ssh-keys        = "ubuntu:${var.ssh_key}"
-    radmin-password = var.radmin_password
+    radmin-password = var.app1_password
   }
 }
