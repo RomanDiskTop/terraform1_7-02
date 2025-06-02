@@ -7,4 +7,3 @@ terraform.tfvars
 *.tfplan
 *.hcl
 *.info
-*.gitignore
