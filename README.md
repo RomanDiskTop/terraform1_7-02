@@ -1,4 +1,4 @@
-```markdown
+
 # Инфраструктура в Yandex Cloud через Terraform
 
 Автоматизирует развертывание облачной инфраструктуры в Yandex Cloud. Создает виртуальную машину с сетевой конфигурацией.
@@ -13,7 +13,7 @@
 
 1. Склонируйте репозиторий
 2. Подготовьте переменные в `terraform.tfvars`:
-```
+
 cloud_id  = "ваш-cloud-id"
 folder_id = "ваш-folder-id"
 token     = "ваш-oauth-токен"
@@ -25,7 +25,7 @@ vm_resources = {
   disk_size = 10
 }
 app1_password = "ваш-пароль"
-```
+
 
 3. Инициализация Terraform:
 ```
@@ -55,6 +55,6 @@ terraform apply
 | `providers.tf` | Настройка провайдера Yandex Cloud 
 
 Для удаления инфраструктуры:
-```bash
+```
 terraform destroy
 ```
